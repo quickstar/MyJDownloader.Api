@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace JDownloader.Api.Models
+namespace Jdownloader.Api.Models
 {
 	public class BaseDto
 	{

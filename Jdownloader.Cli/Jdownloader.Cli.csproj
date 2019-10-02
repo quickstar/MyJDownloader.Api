@@ -7,8 +7,8 @@
     <ProjectGuid>{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JDownloader.Cli</RootNamespace>
-    <AssemblyName>JDownloader.Cli</AssemblyName>
+    <RootNamespace>Jdownloader.Cli</RootNamespace>
+    <AssemblyName>Jdownloader.Cli</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,9 +42,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JDownloader.Api\JDownloader.Api.csproj">
+    <ProjectReference Include="..\JDownloader.Api\Jdownloader.Api.csproj">
       <Project>{564a5ac3-f541-4c74-952b-9c92401f72c3}</Project>
-      <Name>JDownloader.Api</Name>
+      <Name>Jdownloader.Api</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

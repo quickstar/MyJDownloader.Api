@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JDownloader.Api.Models
+namespace Jdownloader.Api.Models
 {
 	public class DevicesDto : BaseDto
 	{

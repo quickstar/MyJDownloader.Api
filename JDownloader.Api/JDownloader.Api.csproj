@@ -7,8 +7,8 @@
     <ProjectGuid>{564A5AC3-F541-4C74-952B-9C92401F72C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JDownloader.Api</RootNamespace>
-    <AssemblyName>JDownloader.Api</AssemblyName>
+    <RootNamespace>Jdownloader.Api</RootNamespace>
+    <AssemblyName>Jdownloader.Api</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

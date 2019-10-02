@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace JDownloader.Api.Crypto
+namespace Jdownloader.Api.Crypto
 {
 	public class CryptoUtils
 	{

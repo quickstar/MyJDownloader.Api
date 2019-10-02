@@ -1,10 +1,9 @@
 ﻿using System;
 
-using JDownloader.Api;
-using JDownloader.Api.Crypto;
-using JDownloader.Api.HttpClient;
+using Jdownloader.Api.Crypto;
+using Jdownloader.Api.HttpClient;
 
-namespace JDownloader.Cli
+namespace Jdownloader.Cli
 {
 	internal class Program
 	{

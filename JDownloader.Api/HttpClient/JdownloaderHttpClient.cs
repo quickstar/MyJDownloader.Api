@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
-using JDownloader.Api.Crypto;
-using JDownloader.Api.Models;
+using Jdownloader.Api.Crypto;
+using Jdownloader.Api.Models;
 
 using Newtonsoft.Json;
 
-namespace JDownloader.Api.HttpClient
+namespace Jdownloader.Api.HttpClient
 {
 	public class JdownloaderHttpClient : IHttpClient
 	{

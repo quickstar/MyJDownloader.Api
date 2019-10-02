@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JDownloader.Api.HttpClient
+namespace Jdownloader.Api.HttpClient
 {
 	public interface IHttpClient
 	{
