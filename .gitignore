@@ -1,0 +1,8 @@
+bin/
+obj/
+/packages/
+.idea/
+.vs/
+
+# ignore user files
+*.user
