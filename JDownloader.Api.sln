@@ -1,8 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JDownloader.Api", "JDownloader.Api\JDownloader.Api.csproj", "{564A5AC3-F541-4C74-952B-9C92401F72C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JDownloader.Cli", "Console\JDownloader.Cli.csproj", "{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +21,11 @@ Global
 		{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E611CEB-3E96-4E36-BB04-B9CF3723C393}
 	EndGlobalSection
 EndGlobal

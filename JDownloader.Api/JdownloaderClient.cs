@@ -11,10 +11,12 @@ using Newtonsoft.Json;
 
 namespace JDownloader.Api
 {
-	public class JDownloader
+	public class JdownloaderClient
 	{
 		private const string ApiUrl = "https://api.jdownloader.org";
 		private const string Appkey = "my.jdownloader.api.wrapper";
+		private const string DeviceApiSelector = "device";
+		private const string ServerApiSelector = "server";
 
 		private static string ExecuteRequest(string url)
 		{
@@ -62,6 +64,18 @@ namespace JDownloader.Api
 			return null;
 		}
 
+		private static byte[] GetByteArrayByHexString(string hexString)
+		{
+			hexString = hexString.Replace("-", "");
+			byte[] ret = new byte[hexString.Length / 2];
+			for (int i = 0; i < ret.Length; i++)
+			{
+				ret[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+			}
+
+			return ret;
+		}
+
 		/// <summary>
 		/// Create the Signature:
 		/// 1. build the full queryString (incl. RequestID)
@@ -95,9 +109,6 @@ namespace JDownloader.Api
 
 		public LoginDto Connect(string email, string password)
 		{
-			//Calculating the Login and Device secret
-			var serverLoginSecret = CreateServerLoginSecret(email, password, "server");
-
 			// The RequestID is required in almost every request.
 			//    It's a number that has to increase from one call to another.
 			//    You can either use a millisecond precise timestamp, or a self incrementing number.
@@ -113,6 +124,12 @@ namespace JDownloader.Api
 						$"&appkey={Uri.EscapeDataString(Appkey)}" +
 						$"&rid={requestId}";
 
+			// Calculating the server login secrete.
+			// This is used only once to optain the session token.
+			var serverLoginSecret = CreateServerLoginSecret(email, password, ServerApiSelector);
+
+			// Since we do not yet have a session token
+			// we use the serverLoginSecret instead to sign the query
 			var signature = CalculateSignature(query, serverLoginSecret);
 			query += "&signature=" + signature;
 
@@ -127,7 +144,28 @@ namespace JDownloader.Api
 				throw new WebException("Ups", WebExceptionStatus.ReceiveFailure);
 			}
 
+			loginDto.ServerEncryptionToken = CreateEncryptionToken(serverLoginSecret, loginDto.SessionToken);
+
+			// Calculating the device login secrete.
+			var deviceLoginSecret = CreateServerLoginSecret(email, password, DeviceApiSelector);
+			loginDto.ServerEncryptionToken = CreateEncryptionToken(serverLoginSecret, loginDto.SessionToken);
+			loginDto.DeviceEncryptionToken = CreateEncryptionToken(deviceLoginSecret, loginDto.SessionToken);
+
 			return loginDto;
+		}
+
+		private byte[] CreateEncryptionToken(byte[] loginSecret, string sessionToken)
+		{
+			byte[] newToken = GetByteArrayByHexString(sessionToken);
+			var newHash = new byte[loginSecret.Length + newToken.Length];
+			loginSecret.CopyTo(newHash, 0);
+			newToken.CopyTo(newHash, 32);
+
+			using (var sha256Managed = new SHA256Managed())
+			{
+				sha256Managed.ComputeHash(newHash);
+				return sha256Managed.Hash;
+			}
 		}
 
 		/// <summary>
@@ -135,8 +173,8 @@ namespace JDownloader.Api
 		/// - Server API
 		/// - Device API
 		/// The server API handles device registrations, account creation, account modification, password resets and so on.
-		/// Furthermore it handles the handshake between the request client and the JDownloader client.
-		/// The device API offers the routes you need to get data from the JDownloader client.
+		/// Furthermore it handles the handshake between the request client and the JdownloaderClient client.
+		/// The device API offers the routes you need to get data from the JdownloaderClient client.
 		/// </summary>
 		private byte[] CreateServerLoginSecret(string mail, string password, string apiIdentifier)
 		{
@@ -190,6 +228,62 @@ namespace JDownloader.Api
 			{
 				return cypherText;
 			}
+		}
+
+		/// <summary>
+		/// Disconnects the your client from the api.
+		/// </summary>
+		/// <returns>True if successful</returns>
+		public bool Disconnect(LoginDto login)
+		{
+			// The RequestID is required in almost every request.
+			//    It's a number that has to increase from one call to another.
+			//    You can either use a millisecond precise timestamp, or a self incrementing number.
+			//    The API will return the RequestID in the response.
+			//    You should validate the response to make sure the answer is valid.
+			var requestId = DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond;
+
+			string query = $"/my/disconnect?sessiontoken={Uri.EscapeDataString(login.SessionToken)}&rid={requestId}";
+			var signature = CalculateSignature(query, login.ServerEncryptionToken);
+			query += "&signature=" + signature;
+
+			var url = ApiUrl + query;
+			var result = ExecuteRequest(url);
+			result = Decrypt(result, login.ServerEncryptionToken);
+			var resultDto = Materialize<BaseDto>(result);
+
+			if (resultDto.RequestId != requestId)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		public DevicesDto ListDevices(LoginDto login)
+		{
+			// The RequestID is required in almost every request.
+			//    It's a number that has to increase from one call to another.
+			//    You can either use a millisecond precise timestamp, or a self incrementing number.
+			//    The API will return the RequestID in the response.
+			//    You should validate the response to make sure the answer is valid.
+			var requestId = DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond;
+
+			string query = $"/my/listdevices?sessiontoken={Uri.EscapeDataString(login.SessionToken)}&rid={requestId}";
+			var signature = CalculateSignature(query, login.ServerEncryptionToken);
+			query += "&signature=" + signature;
+
+			var url = ApiUrl + query;
+			var result = ExecuteRequest(url);
+			result = Decrypt(result, login.ServerEncryptionToken);
+			var resultDto = Materialize<DevicesDto>(result);
+
+			if (resultDto.RequestId != requestId)
+			{
+				throw new WebException("Ups", WebExceptionStatus.ReceiveFailure);
+			}
+
+			return resultDto;
 		}
 
 		private T Materialize<T>(string rawjson)

@@ -7,8 +7,8 @@
     <ProjectGuid>{973C013F-DF6A-4C3A-9D5E-28BC81AE6F0D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Console</RootNamespace>
-    <AssemblyName>Console</AssemblyName>
+    <RootNamespace>JDownloader.Cli</RootNamespace>
+    <AssemblyName>JDownloader.Cli</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

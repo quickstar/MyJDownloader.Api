@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JDownloader.cs" />
+    <Compile Include="JdownloaderClient.cs" />
+    <Compile Include="Models\BaseDto.cs" />
+    <Compile Include="Models\DevicesDto.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
