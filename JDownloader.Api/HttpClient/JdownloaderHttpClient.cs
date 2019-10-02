@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 
 using Jdownloader.Api.Crypto;
+using Jdownloader.Api.Exceptions;
 using Jdownloader.Api.Models;
 
 using Newtonsoft.Json;
@@ -18,6 +19,17 @@ namespace Jdownloader.Api.HttpClient
 		private const string Appkey = "my.jdownloader.api.wrapper";
 		private const string DeviceApiSelector = "device";
 		private const string ServerApiSelector = "server";
+
+		private static UriBuilder BuildFullUrl(string route, IDictionary<string, string> queryParams)
+		{
+			var queryString = string.Join("&", queryParams.Select(k => $"{k.Key}={k.Value}"));
+			var fullUrl = new UriBuilder(new Uri(ApiUrl))
+			{
+				Path = route,
+				Query = queryString
+			};
+			return fullUrl;
+		}
 
 		private readonly CryptoUtils _cryptoUtils;
 
@@ -125,7 +137,7 @@ namespace Jdownloader.Api.HttpClient
 					var baseDto = Materialize<T>(result);
 					if (baseDto.RequestId != requestId)
 					{
-						throw new WebException("Ups", WebExceptionStatus.ReceiveFailure);
+						throw new InvalidRequestIdException("The received 'RequestId' differs from the 'RequestId' sent by the query.");
 					}
 
 					return baseDto;
@@ -146,25 +158,6 @@ namespace Jdownloader.Api.HttpClient
 			return null;
 		}
 
-		private static UriBuilder BuildFullUrl(string route, IDictionary<string, string> queryParams)
-		{
-			var queryString = string.Join("&", queryParams.Select(k => $"{k.Key}={k.Value}"));
-			var fullUrl = new UriBuilder(new Uri(ApiUrl))
-			{
-				Path = route,
-				Query = queryString
-			};
-			return fullUrl;
-		}
-
-		private void UrlEncodeQueryParams(IDictionary<string, string> queryParams)
-		{
-			foreach (var pair in queryParams.ToArray())
-			{
-				queryParams[pair.Key] = Uri.EscapeDataString(pair.Value);
-			}
-		}
-
 		public DevicesDto ListDevices(LoginDto login)
 		{
 			const string route = "/my/listdevices";
@@ -182,5 +175,13 @@ namespace Jdownloader.Api.HttpClient
 
 		private void PrepareRequest()
 		{ }
+
+		private void UrlEncodeQueryParams(IDictionary<string, string> queryParams)
+		{
+			foreach (var pair in queryParams.ToArray())
+			{
+				queryParams[pair.Key] = Uri.EscapeDataString(pair.Value);
+			}
+		}
 	}
 }
