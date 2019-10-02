@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace Jdownloader.Api.HttpClient
 {
-	public class JdownloaderHttpClient : IHttpClient
+	public class JdownloaderHttpClient : IJdownloaderHttpClient
 	{
 		private const string ApiUrl = "https://api.jdownloader.org";
 		private const string Appkey = "my.jdownloader.api.wrapper";
@@ -36,16 +36,6 @@ namespace Jdownloader.Api.HttpClient
 		public JdownloaderHttpClient(CryptoUtils cryptoUtils)
 		{
 			_cryptoUtils = cryptoUtils;
-		}
-
-		public T Get<T>(string url)
-		{
-			throw new NotImplementedException();
-		}
-
-		public T Post<T>(string url, object body)
-		{
-			throw new NotImplementedException();
 		}
 
 		public LoginDto Connect(string email, string password)
@@ -84,6 +74,16 @@ namespace Jdownloader.Api.HttpClient
 
 			var result = ExecuteRequest<BaseDto>(route, queryParams, login.ServerEncryptionToken);
 			return result != null;
+		}
+
+		public DevicesDto ListDevices(LoginDto login)
+		{
+			const string route = "/my/listdevices";
+			var queryParams = new Dictionary<string, string> { { "sessiontoken", login.SessionToken } };
+
+			var result = ExecuteRequest<DevicesDto>(route, queryParams, login.ServerEncryptionToken);
+
+			return result;
 		}
 
 		private T ExecuteRequest<T>(string route, IDictionary<string, string> queryParams, byte[] secret) where T : BaseDto
@@ -158,23 +158,10 @@ namespace Jdownloader.Api.HttpClient
 			return null;
 		}
 
-		public DevicesDto ListDevices(LoginDto login)
-		{
-			const string route = "/my/listdevices";
-			var queryParams = new Dictionary<string, string> { { "sessiontoken", login.SessionToken } };
-
-			var result = ExecuteRequest<DevicesDto>(route, queryParams, login.ServerEncryptionToken);
-
-			return result;
-		}
-
 		private T Materialize<T>(string rawjson)
 		{
 			return (T)JsonConvert.DeserializeObject(rawjson, typeof(T));
 		}
-
-		private void PrepareRequest()
-		{ }
 
 		private void UrlEncodeQueryParams(IDictionary<string, string> queryParams)
 		{

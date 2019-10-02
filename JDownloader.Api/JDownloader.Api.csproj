@@ -43,11 +43,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crypto\CryptoUtils.cs" />
+    <Compile Include="Exceptions\InvalidRequestIdException.cs" />
     <Compile Include="HttpClient\IHttpClient.cs" />
+    <Compile Include="HttpClient\IJdownloaderHttpClient.cs" />
     <Compile Include="HttpClient\JdownloaderHttpClient.cs" />
+    <Compile Include="Jdownloader.cs" />
     <Compile Include="Models\BaseDto.cs" />
     <Compile Include="Models\DevicesDto.cs" />
     <Compile Include="Models\LoginDto.cs" />
+    <Compile Include="Namespaces\Jd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

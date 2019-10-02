@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using Jdownloader.Api.Crypto;
 using Jdownloader.Api.HttpClient;
@@ -12,19 +13,20 @@ namespace Jdownloader.Cli
 			var username = args[0];
 			var password = args[1];
 
-			var jdownloader = new JdownloaderHttpClient(new CryptoUtils());
-			var loginDto = jdownloader.Connect(username, password);
+			var jdownloaderHttpClient = new JdownloaderHttpClient(new CryptoUtils());
+			var loginDto = jdownloaderHttpClient.Connect(username, password);
 
-			var listDevices = jdownloader.ListDevices(loginDto);
+			var listDevices = jdownloaderHttpClient.ListDevices(loginDto);
 			foreach (var device in listDevices.List)
 			{
 				Console.WriteLine($"Device: {device.Name} ({device.Id})");
 				Console.WriteLine($"Type: {device.Type}");
 			}
 
-			jdownloader.Disconnect(loginDto);
+			var activeDevice = listDevices.List.First();
 
-			listDevices = jdownloader.ListDevices(loginDto);
+			var jdownloader = new Api.Jdownloader(activeDevice, jdownloaderHttpClient, loginDto);
+			jdownloader.Jd.Version();
 
 			Console.ReadKey();
 		}
