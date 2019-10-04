@@ -3,6 +3,7 @@ using System.Linq;
 
 using Jdownloader.Api.Crypto;
 using Jdownloader.Api.HttpClient;
+using Jdownloader.Api.Models;
 
 namespace Jdownloader.Cli
 {
@@ -29,6 +30,15 @@ namespace Jdownloader.Cli
 			jdownloader.Jd.Version();
 
 			Console.ReadKey();
+		}
+
+		private static void Test()
+		{
+			var auth = new JdownloaderCredentials { Username = "asf", Password = "asdf" };
+			var api = new JdownloaderClientFactory().Create(auth);
+			DevicesDto availableDevices = api.GetDevices();
+			var deviceApi = api.SetDevice(availableDevices.List.First());
+			deviceApi.Jd.Version();
 		}
 	}
 }

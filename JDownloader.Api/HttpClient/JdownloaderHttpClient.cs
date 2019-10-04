@@ -115,7 +115,7 @@ namespace Jdownloader.Api.HttpClient
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
 					response.Close();
-					return default;
+					return null;
 				}
 
 				using (var responseStream = response.GetResponseStream())
