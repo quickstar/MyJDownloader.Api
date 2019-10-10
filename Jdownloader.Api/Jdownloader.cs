@@ -8,11 +8,11 @@ namespace Jdownloader.Api
 {
 	public class JDownloader
 	{
-		private readonly DeviceItemDto _device;
+		private readonly DeviceDto _device;
 		private readonly JDownloaderHttpClient _httpClient;
 		private readonly LoginDto _loginDto;
 
-		public JDownloader(DeviceItemDto device, JDownloaderHttpClient httpClient, LoginDto loginDto)
+		public JDownloader(DeviceDto device, JDownloaderHttpClient httpClient, LoginDto loginDto)
 		{
 			_device = device;
 			_httpClient = httpClient;

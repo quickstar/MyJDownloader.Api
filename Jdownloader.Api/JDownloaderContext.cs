@@ -36,7 +36,7 @@ namespace Jdownloader.Api
 			return result;
 		}
 
-		public object SetDevice(DeviceItemDto device)
+		public object SetDevice(DeviceDto device)
 		{
 			throw new NotImplementedException();
 		}

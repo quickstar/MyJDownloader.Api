@@ -5,10 +5,10 @@ namespace Jdownloader.Api.Models
 {
 	public class DevicesDto : BaseDto
 	{
-		public IEnumerable<DeviceItemDto> List { get; set; }
+		public IEnumerable<DeviceDto> List { get; set; }
 	}
 
-	public class DeviceItemDto
+	public class DeviceDto
 	{
 		public string Id { get; set; }
 
