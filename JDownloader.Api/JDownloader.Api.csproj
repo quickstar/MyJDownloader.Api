@@ -45,9 +45,14 @@
     <Compile Include="Crypto\CryptoUtils.cs" />
     <Compile Include="Exceptions\InvalidRequestIdException.cs" />
     <Compile Include="HttpClient\IHttpClient.cs" />
-    <Compile Include="HttpClient\IJdownloaderHttpClient.cs" />
-    <Compile Include="HttpClient\JdownloaderHttpClient.cs" />
-    <Compile Include="Jdownloader.cs" />
+    <Compile Include="HttpClient\IJDownloaderHttpClient.cs" />
+    <Compile Include="HttpClient\JDownloaderHttpClient.cs" />
+    <Compile Include="HttpClient\JDownloaderHttpException.cs" />
+    <Compile Include="HttpClient\WebRequestClient.cs" />
+    <Compile Include="JDownloader.cs" />
+    <Compile Include="JDownloaderFactory.cs" />
+    <Compile Include="JDownloaderContext.cs" />
+    <Compile Include="JDownloaderCredentials.cs" />
     <Compile Include="Models\BaseDto.cs" />
     <Compile Include="Models\DevicesDto.cs" />
     <Compile Include="Models\LoginDto.cs" />

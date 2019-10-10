@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
 
 using Jdownloader.Api.Crypto;
 using Jdownloader.Api.Exceptions;
@@ -13,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Jdownloader.Api.HttpClient
 {
-	public class JdownloaderHttpClient : IJdownloaderHttpClient
+	public class JDownloaderHttpClient : IJDownloaderHttpClient
 	{
 		private const string ApiUrl = "https://api.jdownloader.org";
 		private const string Appkey = "my.jdownloader.api.wrapper";
@@ -32,17 +30,17 @@ namespace Jdownloader.Api.HttpClient
 		}
 
 		private readonly CryptoUtils _cryptoUtils;
+		private readonly IHttpClient _httpClient;
 
-		public JdownloaderHttpClient(CryptoUtils cryptoUtils)
+		public JDownloaderHttpClient(CryptoUtils cryptoUtils, IHttpClient httpClient)
 		{
 			_cryptoUtils = cryptoUtils;
+			_httpClient = httpClient;
 		}
 
 		public LoginDto Connect(string email, string password)
 		{
 			// Creating the query for the connection request
-			// URL-Encoding
-			//	Make sure all route parameters are correctly urlencoded.
 			const string route = "/my/connect";
 			var queryParams = new Dictionary<string, string> { { "email", email }, { "appkey", Appkey } };
 
@@ -56,7 +54,7 @@ namespace Jdownloader.Api.HttpClient
 			var deviceLoginSecret = _cryptoUtils.CreateServerLoginSecret(email, password, DeviceApiSelector);
 
 			// Enhance LoginDto with server- and device encryption tokens which in all
-			// subsequent requests will be used to sign and decrypt the requests
+			// subsequent requests will be used to sign and encrypt/decrypt the requests
 			loginDto.ServerEncryptionToken = _cryptoUtils.CreateEncryptionToken(serverLoginSecret, loginDto.SessionToken);
 			loginDto.DeviceEncryptionToken = _cryptoUtils.CreateEncryptionToken(deviceLoginSecret, loginDto.SessionToken);
 
@@ -76,19 +74,13 @@ namespace Jdownloader.Api.HttpClient
 			return result != null;
 		}
 
-		public DevicesDto ListDevices(LoginDto login)
+		public T Get<T>(string route, Dictionary<string, string> queryParams, byte[] key) where T : BaseDto
 		{
-			const string route = "/my/listdevices";
-			var queryParams = new Dictionary<string, string> { { "sessiontoken", login.SessionToken } };
-
-			var result = ExecuteRequest<DevicesDto>(route, queryParams, login.ServerEncryptionToken);
-
-			return result;
+			return ExecuteRequest<T>(route, queryParams, key);
 		}
 
 		private T ExecuteRequest<T>(string route, IDictionary<string, string> queryParams, byte[] secret) where T : BaseDto
 		{
-			// TODO: queryParams need to be UrlEncoded properly
 			// The RequestID is required in almost every request.
 			//    It's a number that has to increase from one call to another.
 			//    You can either use a millisecond precise timestamp, or a self incrementing number.
@@ -105,57 +97,17 @@ namespace Jdownloader.Api.HttpClient
 			queryParams.Add("signature", signature);
 
 			fullUrl = BuildFullUrl(route, queryParams);
+			var result = _httpClient.Get(fullUrl.Uri);
 
-			var request = (HttpWebRequest)WebRequest.Create(fullUrl.Uri);
-			// request.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=utf-8");
-			try
+			result = _cryptoUtils.Decrypt(result, secret);
+
+			var baseDto = Materialize<T>(result);
+			if (baseDto.RequestId != requestId)
 			{
-				var response = (HttpWebResponse)request.GetResponse();
-
-				if (response.StatusCode != HttpStatusCode.OK)
-				{
-					response.Close();
-					return null;
-				}
-
-				using (var responseStream = response.GetResponseStream())
-				{
-					if (responseStream == null)
-					{
-						return null;
-					}
-
-					string result = null;
-					using (var myStreamReader = new StreamReader(responseStream))
-					{
-						result = myStreamReader.ReadToEnd();
-					}
-
-					response.Close();
-					result = _cryptoUtils.Decrypt(result, secret);
-
-					var baseDto = Materialize<T>(result);
-					if (baseDto.RequestId != requestId)
-					{
-						throw new InvalidRequestIdException("The received 'RequestId' differs from the 'RequestId' sent by the query.");
-					}
-
-					return baseDto;
-				}
-			}
-			catch (WebException exception)
-			{
-				var respsone = exception.Response?.GetResponseStream();
-				if (respsone != null)
-				{
-					using (var resp = new StreamReader(respsone))
-					{
-						string errorMsg = resp.ReadToEnd();
-					}
-				}
+				throw new InvalidRequestIdException("The received 'RequestId' differs from the 'RequestId' sent by the query.");
 			}
 
-			return null;
+			return baseDto;
 		}
 
 		private T Materialize<T>(string rawjson)

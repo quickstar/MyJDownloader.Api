@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using Jdownloader.Api;
 using Jdownloader.Api.Crypto;
 using Jdownloader.Api.HttpClient;
 using Jdownloader.Api.Models;
@@ -14,31 +15,21 @@ namespace Jdownloader.Cli
 			var username = args[0];
 			var password = args[1];
 
-			var jdownloaderHttpClient = new JdownloaderHttpClient(new CryptoUtils());
-			var loginDto = jdownloaderHttpClient.Connect(username, password);
+			var auth = new JDownloaderCredentials { Username = username, Password = password };
 
-			var listDevices = jdownloaderHttpClient.ListDevices(loginDto);
-			foreach (var device in listDevices.List)
+			var jdContext = new JDownloaderFactory().Create(auth);
+			DevicesDto availableDevices = jdContext.GetDevices();
+
+			foreach (var device in availableDevices.List)
 			{
 				Console.WriteLine($"Device: {device.Name} ({device.Id})");
 				Console.WriteLine($"Type: {device.Type}");
 			}
 
-			var activeDevice = listDevices.List.First();
-
-			var jdownloader = new Api.Jdownloader(activeDevice, jdownloaderHttpClient, loginDto);
-			jdownloader.Jd.Version();
+			/*var deviceApi = jdContext.SetDevice(availableDevices.List.First());
+			deviceApi.Jd.Version();*/
 
 			Console.ReadKey();
-		}
-
-		private static void Test()
-		{
-			var auth = new JdownloaderCredentials { Username = "asf", Password = "asdf" };
-			var api = new JdownloaderClientFactory().Create(auth);
-			DevicesDto availableDevices = api.GetDevices();
-			var deviceApi = api.SetDevice(availableDevices.List.First());
-			deviceApi.Jd.Version();
 		}
 	}
 }
