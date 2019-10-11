@@ -20,6 +20,25 @@ namespace Jdownloader.Api.Crypto
 			return ret;
 		}
 
+		private static RijndaelManaged GetRijndaelManaged(byte[] ivKey)
+		{
+			if (ivKey == null)
+			{
+				throw new ArgumentNullException("The ivKey is null. Please check your login informations. If it's still null the server may has disconnected you.");
+			}
+
+			var iv = ivKey.Take(16).ToArray();
+			var key = ivKey.Skip(16).Take(16).ToArray();
+			var rj = new RijndaelManaged
+			{
+				BlockSize = 128,
+				Mode = CipherMode.CBC,
+				IV = iv,
+				Key = key
+			};
+			return rj;
+		}
+
 		/// <summary>
 		/// Create the Signature:
 		/// 1. build the full queryString (incl. RequestID)
@@ -32,16 +51,16 @@ namespace Jdownloader.Api.Crypto
 		/// queryString = "/my/connect?email=foo@bar.com&rid=1361982773157";
 		/// queryString += "&signature=" + HmacSha256(utf8bytes(queryString), ServerEncryptionToken);
 		/// </summary>
-		public string CalculateSignature(string query, byte[] key)
+		public string CalculateSignature(string query, byte[] ivKey)
 		{
-			if (key == null)
+			if (ivKey == null)
 			{
 				throw new Exception("The ivKey is null. Please check your login informations. If it's still null the server may has disconnected you.");
 			}
 
 			var dataBytes = Encoding.UTF8.GetBytes(query);
 			byte[] hash;
-			using (var hmacsha256 = new HMACSHA256(key))
+			using (var hmacsha256 = new HMACSHA256(ivKey))
 			{
 				hmacsha256.ComputeHash(dataBytes);
 				hash = hmacsha256.Hash;
@@ -88,25 +107,11 @@ namespace Jdownloader.Api.Crypto
 		/// </summary>
 		public string Decrypt(string cypherText, byte[] ivKey)
 		{
-			if (ivKey == null)
-			{
-				throw new Exception("The ivKey is null. Please check your login informations. If it's still null the server may has disconnected you.");
-			}
-
-			var iv = ivKey.Take(16).ToArray();
-			var key = ivKey.Skip(16).Take(16).ToArray();
+			var rj = GetRijndaelManaged(ivKey);
 
 			try
 			{
 				var cypher = Convert.FromBase64String(cypherText);
-				var rj = new RijndaelManaged
-				{
-					BlockSize = 128,
-					Mode = CipherMode.CBC,
-					IV = iv,
-					Key = key
-				};
-
 				string result;
 				using (var ms = new MemoryStream(cypher))
 				{
@@ -124,6 +129,26 @@ namespace Jdownloader.Api.Crypto
 			catch (Exception)
 			{
 				return cypherText;
+			}
+		}
+
+		public string Encrypt(string text, byte[] ivKey)
+		{
+			var rj = GetRijndaelManaged(ivKey);
+
+			ICryptoTransform encryptor = rj.CreateEncryptor();
+			using (var memoryStream = new MemoryStream())
+			{
+				using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+				{
+					using (var streamWriter = new StreamWriter(cryptoStream))
+					{
+						streamWriter.Write(text);
+					}
+
+					byte[] cypherData = memoryStream.ToArray();
+					return Convert.ToBase64String(cypherData);
+				}
 			}
 		}
 	}

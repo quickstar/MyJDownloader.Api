@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace Jdownloader.Api.HttpClient
 {
@@ -14,17 +15,26 @@ namespace Jdownloader.Api.HttpClient
 			return ExecWebRequest(uri, WebRequestMethods.Http.Get);
 		}
 
-		public string Post(Uri uri)
+		public string Post(Uri uri, string payload)
 		{
-			return ExecWebRequest(uri, WebRequestMethods.Http.Post, h => h.Add(HttpRequestHeader.ContentType, "application/json; charset=utf-8"));
+			return ExecWebRequest(uri, WebRequestMethods.Http.Post, r =>
+			{
+				r.ContentType = "application/aesjson-jd; charset=utf-8";
+				var data = Encoding.UTF8.GetBytes(payload);
+				r.ContentLength = data.Length;
+				using (var stream = r.GetRequestStream())
+				{
+					stream.Write(data, 0, data.Length);
+				}
+			});
 		}
 
-		private string ExecWebRequest(Uri uri, string method, Action<WebHeaderCollection> additionalHeaders = null)
+		private string ExecWebRequest(Uri uri, string method, Action<HttpWebRequest> requestAction = null)
 		{
 			var request = (HttpWebRequest)WebRequest.Create(uri);
 			request.Method = method;
 
-			additionalHeaders?.Invoke(request.Headers);
+			requestAction?.Invoke(request);
 
 			try
 			{
@@ -43,9 +53,9 @@ namespace Jdownloader.Api.HttpClient
 					}
 
 					string result = null;
-					using (var myStreamReader = new StreamReader(responseStream))
+					using (var streamReader = new StreamReader(responseStream))
 					{
-						result = myStreamReader.ReadToEnd();
+						result = streamReader.ReadToEnd();
 					}
 
 					response.Close();
@@ -57,9 +67,9 @@ namespace Jdownloader.Api.HttpClient
 				var respsone = exception.Response?.GetResponseStream();
 				if (respsone != null)
 				{
-					using (var resp = new StreamReader(respsone))
+					using (var streamReader = new StreamReader(respsone))
 					{
-						string errorMsg = resp.ReadToEnd();
+						string errorMsg = streamReader.ReadToEnd();
 						throw new JDownloaderHttpException(errorMsg);
 					}
 				}

@@ -8,15 +8,15 @@ namespace Jdownloader.Api
 {
 	public class JDownloaderContext
 	{
-		private readonly IJDownloaderHttpClient _httpClient;
+		private readonly IJDownloaderHttpClient _jdownloaderClient;
 
-		public JDownloaderContext(LoginDto loginDto, IJDownloaderHttpClient httpClient)
+		public JDownloaderContext(LoginDto loginDto, IJDownloaderHttpClient jdownloaderClient)
 		{
 			DeviceEncryptionToken = loginDto.DeviceEncryptionToken;
 			ServerEncryptionToken = loginDto.ServerEncryptionToken;
 			SessionToken = loginDto.SessionToken;
 			RegainToken = loginDto.RegainToken;
-			_httpClient = httpClient;
+			_jdownloaderClient = jdownloaderClient;
 		}
 
 		public byte[] DeviceEncryptionToken { get; set; }
@@ -31,14 +31,14 @@ namespace Jdownloader.Api
 		{
 			const string route = "/my/listdevices";
 			var queryParams = new Dictionary<string, string> { { "sessiontoken", SessionToken } };
-			var result = _httpClient.Get<DevicesDto>(route, queryParams, ServerEncryptionToken);
+			var result = _jdownloaderClient.Get<DevicesDto>(route, queryParams, ServerEncryptionToken);
 
 			return result;
 		}
 
-		public object SetDevice(DeviceDto device)
+		public JDownloaderApi SetDevice(DeviceDto device)
 		{
-			throw new NotImplementedException();
+			return new JDownloaderApi(this, device, _jdownloaderClient);
 		}
 	}
 }

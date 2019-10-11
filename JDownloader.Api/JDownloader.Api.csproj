@@ -49,11 +49,12 @@
     <Compile Include="HttpClient\JDownloaderHttpClient.cs" />
     <Compile Include="HttpClient\JDownloaderHttpException.cs" />
     <Compile Include="HttpClient\WebRequestClient.cs" />
-    <Compile Include="JDownloader.cs" />
+    <Compile Include="JDownloaderApi.cs" />
     <Compile Include="JDownloaderFactory.cs" />
     <Compile Include="JDownloaderContext.cs" />
     <Compile Include="JDownloaderCredentials.cs" />
     <Compile Include="Models\BaseDto.cs" />
+    <Compile Include="Models\CallActionObject.cs" />
     <Compile Include="Models\DevicesDto.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Namespaces\Jd.cs" />

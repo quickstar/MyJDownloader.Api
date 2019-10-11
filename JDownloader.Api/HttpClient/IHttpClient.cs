@@ -6,6 +6,6 @@ namespace Jdownloader.Api.HttpClient
 	{
 		string Get(Uri uri);
 
-		string Post(Uri uri);
+		string Post(Uri uri, string payload);
 	}
 }

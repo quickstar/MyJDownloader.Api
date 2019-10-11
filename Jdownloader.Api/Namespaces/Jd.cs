@@ -7,15 +7,15 @@ namespace Jdownloader.Api.Namespaces
 {
 	public class Jd
 	{
-		private readonly DeviceItemDto _device;
-		private readonly IJDownloaderHttpClient _httpClient;
-		private readonly LoginDto _loginDto;
+		private readonly JDownloaderContext _context;
+		private readonly DeviceDto _device;
+		private readonly IJDownloaderHttpClient _jdClient;
 
-		public Jd(DeviceItemDto device, IJDownloaderHttpClient httpClient, LoginDto loginDto)
+		public Jd(JDownloaderContext context, DeviceDto device, IJDownloaderHttpClient jdClient)
 		{
+			_context = context;
 			_device = device;
-			_httpClient = httpClient;
-			_loginDto = loginDto;
+			_jdClient = jdClient;
 		}
 
 		/// <summary>
@@ -24,15 +24,13 @@ namespace Jdownloader.Api.Namespaces
 		/// <returns>The current version of the JDownloader client.</returns>
 		public long Version()
 		{
-			/*_httpClient.Post<BaseDto>(_device, "/jd/version", null, _loginDto);
-			var response = ApiHandler.CallAction<DefaultReturnObject>(_device, "/jd/version", null, LoginObject, true);
+			var response = _jdClient.Post<BaseDto>("/jd/version", _device, _context.SessionToken, _context.DeviceEncryptionToken);
 			if (response == null)
 			{
 				return -1;
 			}
 
-			return (long)response.Data;*/
-			return 0;
+			return 1; // (long)response.Data;
 		}
 	}
 }
