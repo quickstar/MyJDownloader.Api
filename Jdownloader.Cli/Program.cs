@@ -2,9 +2,9 @@
 using System.Linq;
 
 using Jdownloader.Api;
-using Jdownloader.Api.Crypto;
-using Jdownloader.Api.HttpClient;
 using Jdownloader.Api.Models;
+using Jdownloader.Api.Models.DownloadsV2;
+using Jdownloader.Api.Models.LinkgrabberV2;
 
 namespace Jdownloader.Cli
 {

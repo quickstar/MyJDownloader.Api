@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Jdownloader.Api.Models
 {
-	public class CallActionObject : BaseDto
+	public class CallActionDto : BaseDto
 	{
 		[JsonProperty(PropertyName = "ApiVer", Order = 4)]
 		public int ApiVer { get; set; }

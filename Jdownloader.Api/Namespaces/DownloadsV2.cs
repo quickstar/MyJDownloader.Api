@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Jdownloader.Api.HttpClient;
 using Jdownloader.Api.Models;
+using Jdownloader.Api.Models.DownloadsV2;
 
 namespace Jdownloader.Api.Namespaces
 {

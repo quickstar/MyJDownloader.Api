@@ -81,7 +81,7 @@ namespace Jdownloader.Api.HttpClient
 		public T Post<T>(string route, DeviceDto device, object data, string sessionToken, byte[] key, bool validateRequest = false) where T : BaseDto
 		{
 			string query = $"/t_{Uri.EscapeDataString(sessionToken)}_{Uri.EscapeDataString(device.Id)}{route}";
-			CallActionObject body = new CallActionObject
+			CallActionDto body = new CallActionDto
 			{
 				ApiVer = 1,
 				Params = data != null ? new [] { JsonConvert.SerializeObject(data) } : null,

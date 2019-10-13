@@ -2,7 +2,7 @@ using Jdownloader.Api.Models.LinkgrabberV2;
 
 using Newtonsoft.Json;
 
-namespace Jdownloader.Api.Models
+namespace Jdownloader.Api.Models.DownloadsV2
 {
 	public class FilePackageDto
 	{

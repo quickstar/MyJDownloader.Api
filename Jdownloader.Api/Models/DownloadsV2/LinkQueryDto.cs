@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Jdownloader.Api.Models
+namespace Jdownloader.Api.Models.DownloadsV2
 {
 	public class LinkQueryDto
 	{
