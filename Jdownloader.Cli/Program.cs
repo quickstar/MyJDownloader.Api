@@ -28,8 +28,10 @@ namespace Jdownloader.Cli
 
 			var deviceApi = jdContext.SetDevice(availableDevices.List.First());
 			var coreVersion = deviceApi.Jd.CoreRevision();
-			var packages = deviceApi.DownloadsV2.QueryPackages(new LinkQueryObject());
+			var packages = deviceApi.DownloadsV2.QueryPackages(new LinkQueryDto());
 			var state = deviceApi.DownloadController.GetCurrentState();
+			var dlFolderHistory = deviceApi.LinkgrabberV2.GetDownloadFolderHistorySelectionBase();
+			var linksAddedSuccessfully = deviceApi.LinkgrabberV2.AddLinks(new AddLinkRequestDto());
 			Console.WriteLine($"Version: {coreVersion}");
 			Console.WriteLine($"Packages: {string.Join(Environment.NewLine + "- ", packages.Select(p => p.Name))}");
 

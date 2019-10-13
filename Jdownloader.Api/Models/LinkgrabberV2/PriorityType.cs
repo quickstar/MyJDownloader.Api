@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jdownloader.Api.Models
+namespace Jdownloader.Api.Models.LinkgrabberV2
 {
 	public enum PriorityType
 	{

@@ -1,3 +1,5 @@
+using Jdownloader.Api.Models.LinkgrabberV2;
+
 using Newtonsoft.Json;
 
 namespace Jdownloader.Api.Models

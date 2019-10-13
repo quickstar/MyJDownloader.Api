@@ -2,7 +2,7 @@
 
 namespace Jdownloader.Api.Models
 {
-	public class LinkQueryObject
+	public class LinkQueryDto
 	{
 		[JsonProperty(PropertyName = "addedDate")]
 		public bool AddedDate { get; set; } = true;

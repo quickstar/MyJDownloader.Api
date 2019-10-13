@@ -11,6 +11,7 @@ namespace Jdownloader.Api
 			DownloadController = new DownloadController(context, device, jdownloaderClient);
 			DownloadsV2 = new DownloadsV2(context, device, jdownloaderClient);
 			Jd = new Jd(context, device, jdownloaderClient);
+			LinkgrabberV2 = new LinkgrabberV2(context, device, jdownloaderClient);
 		}
 
 		public DownloadController DownloadController { get; }
@@ -18,5 +19,7 @@ namespace Jdownloader.Api
 		public DownloadsV2 DownloadsV2 { get; }
 
 		public Jd Jd { get; }
+
+		public LinkgrabberV2 LinkgrabberV2 { get; }
 	}
 }
