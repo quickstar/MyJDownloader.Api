@@ -78,24 +78,24 @@ namespace Jdownloader.Api.HttpClient
 			return ExecuteRequest<T>(route, queryParams, null, true, key);
 		}
 
-		public T Post<T>(string route, DeviceDto device, IDictionary<string, string> queryParams, bool validateRequest, string sessionToken, byte[] key) where T : BaseDto
+		public T Post<T>(string route, DeviceDto device, object data, string sessionToken, byte[] key, bool validateRequest = true) where T : BaseDto
 		{
 			string query = $"/t_{Uri.EscapeDataString(sessionToken)}_{Uri.EscapeDataString(device.Id)}{route}";
 			CallActionObject body = new CallActionObject
 			{
 				ApiVer = 1,
-				Params = queryParams.Any() ? queryParams : null,
+				Params = data != null ? new [] { JsonConvert.SerializeObject(data) } : null,
 				Url = route
 			};
 
-			var result = ExecuteRequest<T>(query, queryParams, body, validateRequest, key);
+			var result = ExecuteRequest<T>(query, new Dictionary<string, string>(), body, validateRequest, key);
 
 			return result;
 		}
 
 		public T Post<T>(string route, DeviceDto device, string sessionToken, byte[] key) where T : BaseDto
 		{
-			return Post<T>(route, device, new Dictionary<string, string>(), false, sessionToken, key);
+			return Post<T>(route, device, null, sessionToken, key, false);
 		}
 
 		private T ExecuteRequest<T>(string route, IDictionary<string, string> queryParams, BaseDto body, bool validateRequest, byte[] secret) where T : BaseDto
@@ -152,7 +152,7 @@ namespace Jdownloader.Api.HttpClient
 			var baseDto = Materialize<T>(result);
 			if (validateRequest && baseDto.RequestId != requestId)
 			{
-					throw new InvalidRequestIdException("The received 'RequestId' differs from the 'RequestId' sent by the query.");
+				throw new InvalidRequestIdException("The received 'RequestId' differs from the 'RequestId' sent by the query.");
 			}
 
 			return baseDto;

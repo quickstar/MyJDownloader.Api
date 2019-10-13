@@ -57,7 +57,11 @@
     <Compile Include="Models\DefaultReturnDto.cs" />
     <Compile Include="Models\CallActionObject.cs" />
     <Compile Include="Models\DevicesDto.cs" />
+    <Compile Include="Models\FilePackageDto.cs" />
+    <Compile Include="Models\LinkQueryObject.cs" />
     <Compile Include="Models\LoginDto.cs" />
+    <Compile Include="Models\PriorityType.cs" />
+    <Compile Include="Namespaces\DownloadsV2.cs" />
     <Compile Include="Namespaces\Jd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
