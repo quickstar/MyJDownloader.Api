@@ -18,19 +18,30 @@ namespace Jdownloader.Api.Namespaces
 			_jdClient = jdClient;
 		}
 
+		public int CoreRevision()
+		{
+			var response = _jdClient.Post<DefaultReturnDto<int>>("/jd/getCoreRevision", _device, _context.SessionToken, _context.DeviceEncryptionToken);
+			if (response == null)
+			{
+				return -1;
+			}
+
+			return response.Data;
+		}
+
 		/// <summary>
 		/// Gets the version of the JDownloader client.
 		/// </summary>
 		/// <returns>The current version of the JDownloader client.</returns>
 		public long Version()
 		{
-			var response = _jdClient.Post<BaseDto>("/jd/version", _device, _context.SessionToken, _context.DeviceEncryptionToken);
+			var response = _jdClient.Post<DefaultReturnDto<long>>("/jd/version", _device, _context.SessionToken, _context.DeviceEncryptionToken);
 			if (response == null)
 			{
 				return -1;
 			}
 
-			return 1; // (long)response.Data;
+			return response.Data;
 		}
 	}
 }

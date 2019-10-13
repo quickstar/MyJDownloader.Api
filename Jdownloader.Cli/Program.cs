@@ -27,8 +27,8 @@ namespace Jdownloader.Cli
 			}
 
 			var deviceApi = jdContext.SetDevice(availableDevices.List.First());
-			var version = deviceApi.Jd.Version();
-			Console.WriteLine($"Version: {version}");
+			var coreVersion = deviceApi.Jd.CoreRevision();
+			Console.WriteLine($"Version: {coreVersion}");
 
 			Console.ReadKey();
 		}
