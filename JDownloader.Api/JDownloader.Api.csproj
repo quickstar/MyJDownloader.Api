@@ -61,6 +61,7 @@
     <Compile Include="Models\LinkQueryObject.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\PriorityType.cs" />
+    <Compile Include="Namespaces\DownloadController.cs" />
     <Compile Include="Namespaces\DownloadsV2.cs" />
     <Compile Include="Namespaces\Jd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

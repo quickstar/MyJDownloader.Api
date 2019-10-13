@@ -8,9 +8,12 @@ namespace Jdownloader.Api
 	{
 		public JDownloaderApi(JDownloaderContext context, DeviceDto device, IJDownloaderHttpClient jdownloaderClient)
 		{
+			DownloadController = new DownloadController(context, device, jdownloaderClient);
 			DownloadsV2 = new DownloadsV2(context, device, jdownloaderClient);
 			Jd = new Jd(context, device, jdownloaderClient);
 		}
+
+		public DownloadController DownloadController { get; }
 
 		public DownloadsV2 DownloadsV2 { get; }
 

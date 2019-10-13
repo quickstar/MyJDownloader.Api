@@ -29,6 +29,7 @@ namespace Jdownloader.Cli
 			var deviceApi = jdContext.SetDevice(availableDevices.List.First());
 			var coreVersion = deviceApi.Jd.CoreRevision();
 			var packages = deviceApi.DownloadsV2.QueryPackages(new LinkQueryObject());
+			var state = deviceApi.DownloadController.GetCurrentState();
 			Console.WriteLine($"Version: {coreVersion}");
 			Console.WriteLine($"Packages: {string.Join(Environment.NewLine + "- ", packages.Select(p => p.Name))}");
 
