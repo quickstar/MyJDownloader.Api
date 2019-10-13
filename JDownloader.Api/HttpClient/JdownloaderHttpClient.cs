@@ -78,7 +78,7 @@ namespace Jdownloader.Api.HttpClient
 			return ExecuteRequest<T>(route, queryParams, null, true, key);
 		}
 
-		public T Post<T>(string route, DeviceDto device, object data, string sessionToken, byte[] key, bool validateRequest = true) where T : BaseDto
+		public T Post<T>(string route, DeviceDto device, object data, string sessionToken, byte[] key, bool validateRequest = false) where T : BaseDto
 		{
 			string query = $"/t_{Uri.EscapeDataString(sessionToken)}_{Uri.EscapeDataString(device.Id)}{route}";
 			CallActionObject body = new CallActionObject
