@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Jdownloader.Api.HttpClient;
@@ -30,7 +30,7 @@ namespace Jdownloader.Api.Namespaces
 		public bool AddLinks(AddLinkRequestDto requestDto)
 		{
 			requestDto.Links = requestDto.Links.Replace(";", "\\r\\n");
-			var response = _jdClient.Post<DefaultReturnDto<string[]>>("/linkgrabberv2/addLinks", _device, _context.SessionToken, _context.DeviceEncryptionToken);
+			var response = _jdClient.Post<DefaultReturnDto<object>>("/linkgrabberv2/addLinks", _device, requestDto, _context.SessionToken, _context.DeviceEncryptionToken);
 			return response != null;
 		}
 
